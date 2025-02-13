@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios'; // Импортируем Axios
 import './App.css';
 
 function App() {
@@ -12,64 +13,47 @@ function App() {
     fetchTodos();
   }, []);
 
+
   const fetchTodos = async () => {
     try {
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Ошибка загрузки');
-      const data = await response.json();
-      setTodos(data);
+      const response = await axios.get(API_URL);
+      setTodos(response.data);
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка загрузки:', error);
     }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newTodo),
-      });
-      if (!response.ok) throw new Error('Ошибка создания');
+      await axios.post(API_URL, newTodo);
       setNewTodo({ title: '', completed: false });
       await fetchTodos();
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка создания:', error);
     }
   };
 
   const handleUpdate = async (id, updatedTodo) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedTodo),
-      });
-      if (!response.ok) throw new Error('Ошибка обновления');
+      await axios.put(`${API_URL}/${id}`, updatedTodo);
       await fetchTodos();
       setEditTodo(null);
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка обновления:', error);
     }
   };
+
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Ошибка удаления');
+      await axios.delete(`${API_URL}/${id}`);
       await fetchTodos();
     } catch (error) {
-      console.error('Ошибка:', error);
+      console.error('Ошибка удаления:', error);
     }
   };
-
   return (
     <div className="App">
       <h1 className='zagalovok'>Менеджер задач</h1>
@@ -91,6 +75,7 @@ function App() {
           <div key={todo.id} className="todo-item">
             {editTodo?.id === todo.id ? (
               <input
+                className='inizmen'
                 value={editTodo.title}
                 onChange={(e) => setEditTodo({ ...editTodo, title: e.target.value })}
                 style={{
@@ -106,6 +91,7 @@ function App() {
 
             <div className="actions">
               <input
+                
                 type="checkbox"
                 className='check'
                 checked={todo.completed}

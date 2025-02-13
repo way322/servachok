@@ -109,3 +109,15 @@ body {
   display: flex;
   align-items: center;
 }
+
+.inizmen {
+  height: 40px;
+  margin-bottom: 10px;
+  font-size: 25px;
+  border-radius: 10px;
+  border: 0px;
+  color: white;
+  background: #68135c;
+  text-align: center;
+
+}
